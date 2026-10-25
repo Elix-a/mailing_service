@@ -1,0 +1,26 @@
+{% extends 'mailing/base.html' %}
+{% block title %}Рассылка #{{ mailing.pk }}{% endblock %}
+{% block content %}
+<h1>Рассылка #{{ mailing.pk }}</h1>
+<p><strong>Начало:</strong> {{ mailing.start_time|date:"d.m.Y H:i" }}</p>
+<p><strong>Окончание:</strong> {{ mailing.end_time|date:"d.m.Y H:i" }}</p>
+<p><strong>Статус:</strong> {{ mailing.get_status_display }}</p>
+<p><strong>Сообщение:</strong> {{ mailing.message.subject }}</p>
+<p><strong>Получатели:</strong></p>
+<ul>
+    {% for client in mailing.recipients.all %}
+        <li>{{ client.full_name }} ({{ client.email }})</li>
+    {% empty %}
+        <li>Нет получателей.</li>
+    {% endfor %}
+</ul>
+<h2>История попыток</h2>
+<ul>
+    {% for attempt in mailing.attempts.all %}
+        <li>{{ attempt.attempt_time|date:"d.m.Y H:i" }} — {{ attempt.get_status_display }} ({{ attempt.server_response }})</li>
+    {% empty %}
+        <li>Попыток пока не было.</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'mailing:mailing_list' %}" class="btn btn-secondary">Назад</a>
+{% endblock %}
